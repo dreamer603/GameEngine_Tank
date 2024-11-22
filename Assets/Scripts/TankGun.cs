@@ -15,11 +15,6 @@ public class TankGun : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        GunRotate();   
     }
-
-    public void GunRotate()
-    {
-        
-    }
+    
 }

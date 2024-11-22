@@ -17,20 +17,13 @@ public class Bullet : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
     }
 
-    public void Fire(float fireAngle, float fireVelocity)
+    public void Fire(float fireVelocity)
     {
+        Debug.Log("fire");
         _rigidbody = GetComponent<Rigidbody>();
-        
-        float theta = fireAngle * Mathf.Deg2Rad;
-
-        float velocityX = fireVelocity * Mathf.Cos(theta);
-        float velocityY = fireVelocity * Mathf.Sin(theta);
-
-        Vector3 force = new Vector3(velocityX, velocityY, 0);
-        _rigidbody.AddForce(force, ForceMode.VelocityChange);
+        _rigidbody.AddForce(transform.forward * fireVelocity * Time.deltaTime, ForceMode.Impulse);
     }
 
     public void OnTriggerEnter(Collider other)

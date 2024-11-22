@@ -10,6 +10,8 @@ public class Player : MonoBehaviour
     public GameObject bullet;
     public GameObject boomEffect;
 
+    public Transform firePosition;
+
     private CharacterController _characterController;
 
     private float _moveSpeed = 4f;
@@ -29,8 +31,8 @@ public class Player : MonoBehaviour
         Rotate();
         if (Input.GetMouseButtonDown(0))
         {
-            Instantiate(bullet);
-            bullet.GetComponent<Bullet>().Fire(tankGun.transform.eulerAngles.x, 100f);
+            Instantiate(bullet, firePosition.position, firePosition.rotation);
+            bullet.GetComponent<Bullet>().Fire(50f);
         }
     }
 
@@ -39,11 +41,25 @@ public class Player : MonoBehaviour
         float dirZ = Input.GetAxis("Vertical");
         float dirX = Input.GetAxis("Horizontal");
         
-        Vector3 dir = new Vector3(0, 0, dirZ).normalized;
         Vector3 rot = new Vector3(0, dirX, 0).normalized;
         
-        gameObject.transform.Rotate(rot * _rotateSpeed * Time.deltaTime);
-        _characterController.Move(dir * _moveSpeed * Time.deltaTime);
+        
+        if (dirZ == 1)
+        {
+            gameObject.transform.Rotate(rot * _rotateSpeed * Time.deltaTime);
+            _characterController.Move(transform.forward * _moveSpeed * Time.deltaTime);
+        }
+        else if (dirZ == -1)
+        {
+            gameObject.transform.Rotate(rot * _rotateSpeed * Time.deltaTime);
+            _characterController.Move(-transform.forward * _moveSpeed * Time.deltaTime);
+        }
+
+        if (!_characterController.isGrounded)
+        {
+            _characterController.Move(new Vector3(0, -9.8f, 0) * Time.deltaTime);
+        }
+        
     }
 
     private void Rotate()
