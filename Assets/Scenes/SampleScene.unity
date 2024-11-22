@@ -335,6 +335,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tank
       objectReference: {fileID: 0}
+    - target: {fileID: 5920455847386174832, guid: 5b24e79eabe36914d8118a6206e918ef, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6955298454991694608, guid: 5b24e79eabe36914d8118a6206e918ef, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -373,6 +377,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6955298454991694608, guid: 5b24e79eabe36914d8118a6206e918ef, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7378319195040443112, guid: 5b24e79eabe36914d8118a6206e918ef, type: 3}
+      propertyPath: m_Mass
+      value: 15000
+      objectReference: {fileID: 0}
+    - target: {fileID: 7378319195040443112, guid: 5b24e79eabe36914d8118a6206e918ef, type: 3}
+      propertyPath: m_UseGravity
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7378319195040443112, guid: 5b24e79eabe36914d8118a6206e918ef, type: 3}
+      propertyPath: m_Constraints
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

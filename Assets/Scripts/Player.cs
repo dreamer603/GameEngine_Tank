@@ -10,6 +10,10 @@ public class Player : MonoBehaviour
     public GameObject bullet;
     public GameObject boomEffect;
 
+    public WheelCollider[] wheelColliders;
+    public Transform[] wheelTransform;
+    public float motorToque = 150f;
+
     public Transform firePosition;
 
     private CharacterController _characterController;
@@ -21,7 +25,7 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _characterController = GetComponent<CharacterController>();
+
     }
 
     // Update is called once per frame
@@ -35,6 +39,7 @@ public class Player : MonoBehaviour
             bullet.GetComponent<Bullet>().Fire(50f);
         }
     }
+    
 
     private void Move()
     {
@@ -42,24 +47,61 @@ public class Player : MonoBehaviour
         float dirX = Input.GetAxis("Horizontal");
         
         Vector3 rot = new Vector3(0, dirX, 0).normalized;
-        
-        
-        if (dirZ == 1)
-        {
-            gameObject.transform.Rotate(rot * _rotateSpeed * Time.deltaTime);
-            _characterController.Move(transform.forward * _moveSpeed * Time.deltaTime);
-        }
-        else if (dirZ == -1)
-        {
-            gameObject.transform.Rotate(rot * _rotateSpeed * Time.deltaTime);
-            _characterController.Move(-transform.forward * _moveSpeed * Time.deltaTime);
-        }
 
-        if (!_characterController.isGrounded)
+        if (dirZ == 0)
         {
-            _characterController.Move(new Vector3(0, -9.8f, 0) * Time.deltaTime);
+            for (int i = 0; i < wheelColliders.Length; i++)
+            {
+                wheelColliders[i].motorTorque = 0f;
+                wheelColliders[i].brakeTorque = motorToque;
+            }
+
+            return;
+        }
+        else
+        {
+            for (int i = 0; i < wheelColliders.Length; i++)
+            {
+                wheelColliders[i].brakeTorque = 0f;
+                wheelColliders[i].motorTorque = dirZ * motorToque;
+            }
+        
+            gameObject.transform.Rotate(rot * _rotateSpeed * Time.fixedDeltaTime);
         }
         
+        
+        
+
+        //
+        // if (dirZ == 1)
+        // {
+        //     gameObject.transform.Rotate(rot * _rotateSpeed * Time.deltaTime);
+        //     _characterController.Move(transform.forward * _moveSpeed * Time.deltaTime);
+        // }
+        // else if (dirZ == -1)
+        // {
+        //     gameObject.transform.Rotate(rot * _rotateSpeed * Time.deltaTime);
+        //     _characterController.Move(-transform.forward * _moveSpeed * Time.deltaTime);
+        // }
+        //
+        // if (!wheelCollider.isGrounded)
+        // {
+        //     _characterController.Move(new Vector3(0, -9.8f, 0) * Time.deltaTime);
+        // }
+        //
+    }
+
+    private void UpdateWheelPositions()
+    {
+        for (int i = 0; i < wheelColliders.Length; i++)
+        {
+            Vector3 position;
+            Quaternion quaternion;
+            wheelColliders[i].GetWorldPose(out position, out quaternion);
+
+            wheelTransform[i].position = position;
+            wheelTransform[i].rotation = quaternion;
+        }
     }
 
     private void Rotate()
@@ -67,6 +109,7 @@ public class Player : MonoBehaviour
         float rotZ = Input.GetAxis("Mouse X");
         Vector3 rotTurret = new Vector3(0, 0, rotZ).normalized;
         tankTurret.transform.Rotate(rotTurret * _rotateSpeed * Time.deltaTime);
+        Camera.main.transform.Rotate(new Vector3(0, rotZ, 0) * _rotateSpeed * Time.deltaTime);
         
         float inputScroll = Input.GetAxis("Mouse ScrollWheel");
         if (inputScroll > 0)

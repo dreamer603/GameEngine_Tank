@@ -23,11 +23,11 @@ public class Bullet : MonoBehaviour
     {
         Debug.Log("fire");
         _rigidbody = GetComponent<Rigidbody>();
-        _rigidbody.AddForce(transform.forward * fireVelocity * Time.deltaTime, ForceMode.Impulse);
+        _rigidbody.AddForce(transform.forward * fireVelocity, ForceMode.Impulse);
     }
 
     public void OnTriggerEnter(Collider other)
     {
-        Destroy(this);
+        Destroy(gameObject);
     }
 }
