@@ -1,31 +1,35 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    [Header("Objects")]
     public GameObject tankTurret;
     public GameObject tankGun;
+    [Space]
     public GameObject bullet;
     public GameObject boomEffect;
-
-    public WheelCollider[] wheelColliders;
-    public Transform[] wheelTransform;
-    public float motorToque = 150f;
-
+    public GameObject dieEffect;
+    
+    [Header("Components")]
     public Transform firePosition;
-
-    private CharacterController _characterController;
-
-    private float _moveSpeed = 4f;
-
+    [Space]
+    public WheelCollider[] wheelColliders;
+    private Rigidbody _rigidbody;
+    
+    [Header("amounts")]
+    private float _motorToque = 150f;
     private float _rotateSpeed = 10f;
+    private float _recoilForce = 10f;
+    public float hp = 100;
     
     // Start is called before the first frame update
     void Start()
     {
-
+        _rigidbody = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
@@ -33,10 +37,10 @@ public class Player : MonoBehaviour
     {
         Move();
         Rotate();
-        if (Input.GetMouseButtonDown(0))
+        Fire();
+        if (hp == 0)
         {
-            Instantiate(bullet, firePosition.position, firePosition.rotation);
-            bullet.GetComponent<Bullet>().Fire(50f);
+            Die();
         }
     }
     
@@ -53,57 +57,21 @@ public class Player : MonoBehaviour
             for (int i = 0; i < wheelColliders.Length; i++)
             {
                 wheelColliders[i].motorTorque = 0f;
-                wheelColliders[i].brakeTorque = motorToque;
+                wheelColliders[i].brakeTorque = _motorToque;
             }
-
-            return;
         }
         else
         {
             for (int i = 0; i < wheelColliders.Length; i++)
             {
                 wheelColliders[i].brakeTorque = 0f;
-                wheelColliders[i].motorTorque = dirZ * motorToque;
+                wheelColliders[i].motorTorque = dirZ * _motorToque;
             }
-        
-            gameObject.transform.Rotate(rot * _rotateSpeed * Time.fixedDeltaTime);
-        }
-        
-        
-        
 
-        //
-        // if (dirZ == 1)
-        // {
-        //     gameObject.transform.Rotate(rot * _rotateSpeed * Time.deltaTime);
-        //     _characterController.Move(transform.forward * _moveSpeed * Time.deltaTime);
-        // }
-        // else if (dirZ == -1)
-        // {
-        //     gameObject.transform.Rotate(rot * _rotateSpeed * Time.deltaTime);
-        //     _characterController.Move(-transform.forward * _moveSpeed * Time.deltaTime);
-        // }
-        //
-        // if (!wheelCollider.isGrounded)
-        // {
-        //     _characterController.Move(new Vector3(0, -9.8f, 0) * Time.deltaTime);
-        // }
-        //
-    }
-
-    private void UpdateWheelPositions()
-    {
-        for (int i = 0; i < wheelColliders.Length; i++)
-        {
-            Vector3 position;
-            Quaternion quaternion;
-            wheelColliders[i].GetWorldPose(out position, out quaternion);
-
-            wheelTransform[i].position = position;
-            wheelTransform[i].rotation = quaternion;
+            gameObject.transform.Rotate(rot * _rotateSpeed * Time.deltaTime);
         }
     }
-
+    
     private void Rotate()
     {
         float rotZ = Input.GetAxis("Mouse X");
@@ -114,7 +82,8 @@ public class Player : MonoBehaviour
         float inputScroll = Input.GetAxis("Mouse ScrollWheel");
         if (inputScroll > 0)
         {
-            if (transform.eulerAngles.x >= 0f)
+            Debug.Log("1");
+            if (tankGun.transform.rotation.x > 0.1f)
             {
                 Debug.Log("cancel1");
                 return;
@@ -124,15 +93,34 @@ public class Player : MonoBehaviour
         }
         else if (inputScroll < 0)
         {
-            if (transform.eulerAngles.x <= 340f && transform.eulerAngles.x != 0f)
+            if (tankGun.transform.rotation.x <= -0.8f && tankGun.transform.rotation.x != 0f)
             {
-                Debug.Log("cancel2");
+                Debug.Log("cancel2 :" + tankGun.transform.rotation.x);
                 return;
             }
+            Debug.Log("힝 속았지?");
             float rotGun = Input.GetAxis("Mouse ScrollWheel") * _rotateSpeed * Time.deltaTime;
             tankGun.transform.Rotate(new Vector3(rotGun, 0, 0));
         }
     }
-    
-    
+
+    private void Fire()
+    {
+        if (!Input.GetMouseButtonDown(0))
+        {
+            return;
+        }
+        
+        _rigidbody.AddForce(-firePosition.forward * _recoilForce, ForceMode.Impulse);
+        boomEffect.transform.position = firePosition.position;
+        Instantiate(boomEffect);
+        Instantiate(bullet, firePosition.position, transform.rotation);
+    }
+
+    private void Die()
+    {
+        dieEffect.transform.position = transform.position;
+        Instantiate(dieEffect);
+        Destroy(gameObject);
+    }
 }

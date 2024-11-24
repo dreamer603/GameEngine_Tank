@@ -3,31 +3,39 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
 public class Bullet : MonoBehaviour
 {
+    public GameObject boomEffect;
     private Rigidbody _rigidbody;
     
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
+
     }
 
-    public void Fire(float fireVelocity)
+    private void OnEnable()
     {
-        Debug.Log("fire");
         _rigidbody = GetComponent<Rigidbody>();
-        _rigidbody.AddForce(transform.forward * fireVelocity, ForceMode.Impulse);
+        _rigidbody.AddForce(transform.forward * 50f, ForceMode.Impulse);
     }
 
-    public void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision other)
     {
+        Debug.Log(other.gameObject.name);
+        boomEffect.transform.position = transform.position;
+        Instantiate(boomEffect);
+        _rigidbody.AddExplosionForce(500f, transform.position, 100f);
         Destroy(gameObject);
+        if (other.gameObject.tag == "Zombie")
+        {
+            Destroy(other.gameObject);
+        }
     }
 }
