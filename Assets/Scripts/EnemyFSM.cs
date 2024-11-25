@@ -7,22 +7,19 @@ using UnityEngine.AI;
 
 public class EnemyFSM : MonoBehaviour
 {
-    // 에너미 상태 상수
     enum EnemyState
     {
         Idle,
         Move,
-        Attack,
-        Damaged,
-        Die
+        Attack
     }
     
     private EnemyState m_State;
     
-    public float findDistance = 8f;
+    public float findDistance = 40f;
     
-    private Transform player;
-    
+    private GameObject _player;
+    private Player _sPlayer;
 
     public float attackDistance = 2f;
     
@@ -40,14 +37,6 @@ public class EnemyFSM : MonoBehaviour
     private Quaternion originRot;
     
     public float moveDistance = 20f;
-    public int hp = 30;
-    
-
-    public int maxHp = 30;
-    
-
-    public Slider hpSlider;
-    
 
     private Animator anim;
     
@@ -55,6 +44,8 @@ public class EnemyFSM : MonoBehaviour
     
     void Start()
     {
+        _player = GameObject.FindWithTag("Player");
+        _sPlayer = GetComponent<Player>(); 
         m_State = EnemyState.Idle;
         
         cc = GetComponent<CharacterController>();
@@ -68,8 +59,6 @@ public class EnemyFSM : MonoBehaviour
 
     void Update()
     {
-        hpSlider.value = (float)hp / (float)maxHp;
-        
         switch (m_State)
         {
             case EnemyState.Idle:
@@ -81,21 +70,15 @@ public class EnemyFSM : MonoBehaviour
             case EnemyState.Attack:
                 Attack();
                 break;
-            case EnemyState.Damaged:
-                // Damaged();
-                break;
-            case EnemyState.Die:
-                // Die();
-                break;
         }
     }
 
     void Idle()
     {
-        if (Vector3.Distance(transform.position, player.position) < findDistance)
+        Debug.Log("idle");
+        if (Vector3.Distance(transform.position, _player.transform.position) < findDistance)
         {
             m_State = EnemyState.Move;
-            
             anim.SetTrigger("IdleToMove");
         }
     }
@@ -106,13 +89,15 @@ public class EnemyFSM : MonoBehaviour
         {
             m_State = EnemyState.Idle;
         }
-        else if (Vector3.Distance(transform.position, player.position) > attackDistance)
+        else if (Vector3.Distance(transform.position, _player.transform.position) > attackDistance)
         {
-            smith.isStopped = true;
+            Debug.Log("move : " + _player.gameObject.name);
+            smith.isStopped = false;
             smith.ResetPath();
             
             smith.stoppingDistance = attackDistance;
-            smith.destination = player.position;
+            smith.destination = _player.transform.position;
+            Debug.Log(smith.pathPending);
         }
         else 
         {
@@ -124,18 +109,17 @@ public class EnemyFSM : MonoBehaviour
 
     void Attack()
     {
-        if (Vector3.Distance(transform.position, player.position) < attackDistance)
+        if (Vector3.Distance(transform.position, _player.transform.position) < attackDistance)
         {
             currentTime += Time.deltaTime;
             if (currentTime > attackDelay)
             {
                 currentTime = 0;
-                
                 anim.SetTrigger("StartAttack");
+                _sPlayer.hp -= 5;
             }
         }
-        else=
-
+        else
         {
             m_State = EnemyState.Move;
             currentTime = 0;
@@ -144,83 +128,4 @@ public class EnemyFSM : MonoBehaviour
         }
     }
     
-    // 플레이어의 스크립트의 데미지 처리 함수를 실행하기
-    public void AttackAction()
-    {
-        //player.GetComponent<PlayerMove>().DamageAction(attackPower);
-    }
-
-    void Return()
-    {
-        // 만일 초기 위치에서의 거리가 0.1f 이상이라면 초기 위치쪽으로 이동한다.
-        if (Vector3.Distance(transform.position, originPos) > 0.1f)
-        {
-            smith.destination = originPos;
-
-            smith.stoppingDistance = 0;
-        }
-        else 
-        {
-            smith.isStopped = true;
-            smith.ResetPath();
-
-            transform.position = originPos;
-            transform.rotation = originRot;
-            
-            hp = maxHp;
-            m_State = EnemyState.Idle;
-  
-            anim.SetTrigger("MoveToIdle");
-        }
-    }
-    
-    public void HitEnemy(int hitPower)
-    {
-        if (m_State == EnemyState.Damaged || m_State == EnemyState.Die)
-        {
-            return;
-        }
-        
-        hp -= hitPower;
-        smith.isStopped = true;
-        smith.ResetPath();
-        
-        if (hp > 0)
-        {
-            m_State = EnemyState.Damaged;
-            anim.SetTrigger("Damaged");
-            Damaged();
-        }
-        else 
-        {
-            m_State = EnemyState.Die;
-            anim.SetTrigger("Die");
-            Die();
-        }
-    }
-    
-    void Damaged()
-    {
-        StartCoroutine(DamageProcess());
-    }
-
-    IEnumerator DamageProcess()
-    {
-        yield return new WaitForSeconds(1f);
-        m_State = EnemyState.Move;
-    }
-    
-    // 죽음 상태 메서드
-    void Die()
-    {
-        StopAllCoroutines();
-        StartCoroutine(DieProcess());
-    }
-
-    IEnumerator DieProcess()
-    {
-        cc.enabled = false;
-        yield return new WaitForSeconds(2f);
-        Destroy(gameObject);
-    }
 }

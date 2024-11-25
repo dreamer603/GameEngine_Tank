@@ -28,14 +28,23 @@ public class Bullet : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        Debug.Log(other.gameObject.name);
+        // Debug.Log(other.gameObject.name);
         boomEffect.transform.position = transform.position;
         Instantiate(boomEffect);
-        _rigidbody.AddExplosionForce(500f, transform.position, 100f);
-        Destroy(gameObject);
-        if (other.gameObject.tag == "Zombie")
+        Collider[] cols = Physics.OverlapSphere(transform.position, 2f);
+        for (int i = 0; i < cols.Length; i++)
         {
-            Destroy(other.gameObject);
+            if (cols[i].gameObject.CompareTag("Zombie") || cols[i].gameObject.CompareTag("CanDestroy"))
+            {
+                Destroy(cols[i].gameObject);
+            }
         }
+        Destroy(gameObject);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(transform.position, 2f);
     }
 }

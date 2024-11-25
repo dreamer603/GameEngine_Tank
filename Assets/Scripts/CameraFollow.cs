@@ -22,8 +22,9 @@ public class CameraFollow : MonoBehaviour
         {
             return;
         }
+
         transform.position = new Vector3(tank.position.x, posY, tank.position.z + -8);
-        transform.LookAt(tank);
+        /*transform.LookAt(tank);*/
     }   
 
     private void Move()
