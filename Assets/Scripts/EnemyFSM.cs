@@ -21,9 +21,9 @@ public class EnemyFSM : MonoBehaviour
     private GameObject _player;
     private Player _sPlayer;
 
-    public float attackDistance = 2f;
+    private float attackDistance = 5f;
     
-    public float moveSpeed = 5f;
+    private float moveSpeed = 5f;
     
     private CharacterController cc;
     
@@ -45,7 +45,7 @@ public class EnemyFSM : MonoBehaviour
     void Start()
     {
         _player = GameObject.FindWithTag("Player");
-        _sPlayer = GetComponent<Player>(); 
+        _sPlayer = _player.GetComponent<Player>(); 
         m_State = EnemyState.Idle;
         
         cc = GetComponent<CharacterController>();
@@ -75,7 +75,6 @@ public class EnemyFSM : MonoBehaviour
 
     void Idle()
     {
-        Debug.Log("idle");
         if (Vector3.Distance(transform.position, _player.transform.position) < findDistance)
         {
             m_State = EnemyState.Move;
@@ -91,13 +90,11 @@ public class EnemyFSM : MonoBehaviour
         }
         else if (Vector3.Distance(transform.position, _player.transform.position) > attackDistance)
         {
-            Debug.Log("move : " + _player.gameObject.name);
             smith.isStopped = false;
             smith.ResetPath();
             
             smith.stoppingDistance = attackDistance;
             smith.destination = _player.transform.position;
-            Debug.Log(smith.pathPending);
         }
         else 
         {
