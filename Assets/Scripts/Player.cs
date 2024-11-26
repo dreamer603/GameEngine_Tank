@@ -23,13 +23,15 @@ public class Player : MonoBehaviour
     private float _motorToque = 150f;
     private float _rotateSpeed = 50f;
     private float _recoilForce = 7f;
+    public float maxHp = 100;
     public float hp = 100;
     private float _powerGauge = 1f;
-    private bool _chargeGauge = false;
+    private bool _isCharging = false;
     
     // Start is called before the first frame update
     void Start()
     {
+        hp = 100;
         _rigidbody = GetComponent<Rigidbody>();
     }
 
@@ -102,7 +104,7 @@ public class Player : MonoBehaviour
 
     private void Fire()
     {
-        if (!Input.GetMouseButtonDown(0) || _chargeGauge)
+        if (!Input.GetMouseButtonDown(0) || _isCharging)
         {
             return;
         }
@@ -114,6 +116,7 @@ public class Player : MonoBehaviour
         bullet.transform.rotation = firePosition.rotation;
         Instantiate(bullet);
         StartCoroutine(ChargePowerGauge());
+        StartCoroutine(UIManager.Instance.ChargePowerGaugeUI());
     }
 
     private void Die()
@@ -125,8 +128,8 @@ public class Player : MonoBehaviour
 
     private IEnumerator ChargePowerGauge()
     {
-        _chargeGauge = true;
+        _isCharging = true;
         yield return new WaitForSeconds(1f);
-        _chargeGauge = false;
+        _isCharging = false;
     }
 }

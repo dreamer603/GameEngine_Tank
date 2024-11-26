@@ -16,7 +16,7 @@ public class EnemyFSM : MonoBehaviour
     
     private EnemyState m_State;
     
-    public float findDistance = 40f;
+    public float findDistance = 100f;
     
     private GameObject _player;
     private Player _sPlayer;
