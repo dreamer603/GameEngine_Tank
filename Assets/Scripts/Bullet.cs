@@ -31,12 +31,18 @@ public class Bullet : MonoBehaviour
         // Debug.Log(other.gameObject.name);
         boomEffect.transform.position = transform.position;
         Instantiate(boomEffect);
-        Collider[] cols = Physics.OverlapSphere(transform.position, 2f);
+        Collider[] cols = Physics.OverlapSphere(transform.position, 2.25f);
         for (int i = 0; i < cols.Length; i++)
         {
             if (cols[i].gameObject.CompareTag("Zombie") || cols[i].gameObject.CompareTag("CanDestroy"))
             {
                 Destroy(cols[i].gameObject);
+            }
+
+            if (cols[i].gameObject.CompareTag("Survivor"))
+            {
+                Destroy(cols[i].gameObject);
+                GameManager.Instance.GameOver();
             }
         }
         Destroy(gameObject);
@@ -45,6 +51,6 @@ public class Bullet : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawSphere(transform.position, 2f);
+        Gizmos.DrawSphere(transform.position, 2.25f);
     }
 }

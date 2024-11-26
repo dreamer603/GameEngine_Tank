@@ -16,19 +16,15 @@ public class SurvivorFSM : MonoBehaviour
     
     private SurvivorState m_State;
     
-    public float findDistance = 20f;
+    private float findDistance = 5f;
     
     private GameObject _player;
-    private Player _sPlayer;
     
     private float moveSpeed = 5f;
-    
-    private CharacterController cc;
     
     private float currentTime = 0;
 
     private Vector3 originPos;
-    private Quaternion originRot;
     
     public float moveDistance = 20f;
 
@@ -37,13 +33,9 @@ public class SurvivorFSM : MonoBehaviour
     void Start()
     {
         _player = GameObject.FindWithTag("Player");
-        _sPlayer = _player.GetComponent<Player>(); 
         m_State = SurvivorState.Idle;
         
-        cc = GetComponent<CharacterController>();
-        
         originPos = transform.position;
-        originRot = transform.rotation;
 
         smith = GetComponent<NavMeshAgent>();
     }

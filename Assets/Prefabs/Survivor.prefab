@@ -2344,7 +2344,7 @@ GameObject:
   - component: {fileID: 6439914850691640606}
   m_Layer: 0
   m_Name: Survivor
-  m_TagString: Untagged
+  m_TagString: Survivor
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2358,7 +2358,7 @@ Transform:
   m_GameObject: {fileID: 6648266704706026184}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8.35, y: 0.989, z: 59.702}
+  m_LocalPosition: {x: -10.8, y: 0.20000076, z: 166.8}
   m_LocalScale: {x: 0.95, y: 0.95, z: 0.95}
   m_ConstrainProportionsScale: 0
   m_Children:

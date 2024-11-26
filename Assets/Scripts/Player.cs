@@ -52,8 +52,6 @@ public class Player : MonoBehaviour
     {
         float dirZ = Input.GetAxis("Vertical");
         float dirX = Input.GetAxis("Horizontal");
-        
-        Vector3 rot = new Vector3(0, dirX, 0).normalized;
 
         if (dirZ == 0)
         {
@@ -65,7 +63,10 @@ public class Player : MonoBehaviour
         }
         else
         {
-            gameObject.transform.Rotate(rot * _rotateSpeed * Time.deltaTime);
+            for (int i = 0; i < wheelColliders.Length; i++)
+            {
+                wheelColliders[i].steerAngle = dirX * 10f;
+            }
             for (int i = 0; i < wheelColliders.Length; i++)
             {
                 wheelColliders[i].brakeTorque = 0f;
@@ -124,6 +125,7 @@ public class Player : MonoBehaviour
         dieEffect.transform.position = transform.position;
         Instantiate(dieEffect);
         Destroy(gameObject);
+        GameManager.Instance.GameOver();
     }
 
     private IEnumerator ChargePowerGauge()

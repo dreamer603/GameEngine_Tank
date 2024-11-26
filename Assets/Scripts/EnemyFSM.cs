@@ -16,7 +16,7 @@ public class EnemyFSM : MonoBehaviour
     
     private EnemyState m_State;
     
-    public float findDistance = 100f;
+    private float findDistance = 100;
     
     private GameObject _player;
     private Player _sPlayer;
@@ -25,16 +25,11 @@ public class EnemyFSM : MonoBehaviour
     
     private float moveSpeed = 5f;
     
-    private CharacterController cc;
-    
     private float currentTime = 0;
     
     private float attackDelay = 2f;
-    public int attackPower = 3;
-    
 
     private Vector3 originPos;
-    private Quaternion originRot;
     
     public float moveDistance = 20f;
 
@@ -48,10 +43,7 @@ public class EnemyFSM : MonoBehaviour
         _sPlayer = _player.GetComponent<Player>(); 
         m_State = EnemyState.Idle;
         
-        cc = GetComponent<CharacterController>();
-        
         originPos = transform.position;
-        originRot = transform.rotation;
         
         anim = transform.GetComponentInChildren<Animator>();
         smith = GetComponent<NavMeshAgent>();
