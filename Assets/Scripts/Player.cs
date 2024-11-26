@@ -63,10 +63,8 @@ public class Player : MonoBehaviour
         }
         else
         {
-            for (int i = 0; i < wheelColliders.Length; i++)
-            {
-                wheelColliders[i].steerAngle = dirX * 10f;
-            }
+            wheelColliders[0].steerAngle = dirX * 45;
+            wheelColliders[6].steerAngle = dirX * 45;
             for (int i = 0; i < wheelColliders.Length; i++)
             {
                 wheelColliders[i].brakeTorque = 0f;

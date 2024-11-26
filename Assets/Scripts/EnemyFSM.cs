@@ -16,7 +16,7 @@ public class EnemyFSM : MonoBehaviour
     
     private EnemyState m_State;
     
-    private float findDistance = 100;
+    private float findDistance = 100f;
     
     private GameObject _player;
     private Player _sPlayer;
@@ -25,14 +25,12 @@ public class EnemyFSM : MonoBehaviour
     
     private float moveSpeed = 5f;
     
-    private float currentTime = 0;
+    private float currentTime = 0f;
     
     private float attackDelay = 2f;
 
-    private Vector3 originPos;
+    private GameObject target;
     
-    public float moveDistance = 20f;
-
     private Animator anim;
     
     private NavMeshAgent smith;
@@ -40,10 +38,9 @@ public class EnemyFSM : MonoBehaviour
     void Start()
     {
         _player = GameObject.FindWithTag("Player");
-        _sPlayer = _player.GetComponent<Player>(); 
+        _sPlayer = _player.GetComponent<Player>();
+        target = _player;
         m_State = EnemyState.Idle;
-        
-        originPos = transform.position;
         
         anim = transform.GetComponentInChildren<Animator>();
         smith = GetComponent<NavMeshAgent>();
@@ -76,19 +73,27 @@ public class EnemyFSM : MonoBehaviour
 
     void Move()
     {
-        if (Vector3.Distance(transform.position, originPos) > moveDistance)
-        {
-            m_State = EnemyState.Idle;
-        }
-        else if (Vector3.Distance(transform.position, _player.transform.position) > attackDistance)
-        {
-            smith.isStopped = false;
-            smith.ResetPath();
+        smith.isStopped = false;
+        smith.ResetPath();
             
-            smith.stoppingDistance = attackDistance;
-            smith.destination = _player.transform.position;
+        smith.stoppingDistance = attackDistance;
+        smith.destination = _player.transform.position;
+
+        Collider[] moveColliders = Physics.OverlapSphere(transform.position, 20f);
+        if (moveColliders.Length == 0)
+        {
+            target = _player;
         }
-        else 
+        for (int i = 0; i < moveColliders.Length; i++)
+        {
+            if (moveColliders[i].gameObject.tag == "Survivor")
+            {
+                target = moveColliders[i].gameObject;
+            }
+
+            return;
+        }
+        if (Vector3.Distance(transform.position, target.transform.position) <= attackDistance)
         {
             m_State = EnemyState.Attack;
             currentTime = attackDelay;
@@ -103,6 +108,7 @@ public class EnemyFSM : MonoBehaviour
             currentTime += Time.deltaTime;
             if (currentTime > attackDelay)
             {
+                transform.LookAt(_player.transform.position);
                 currentTime = 0;
                 anim.SetTrigger("StartAttack");
                 _sPlayer.hp -= 5;

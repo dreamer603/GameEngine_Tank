@@ -2463,7 +2463,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bc6466484a24ead8f8f0abdf32af155, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  findDistance: 40
   moveDistance: 20
 --- !u!1 &6778570266557986970
 GameObject:

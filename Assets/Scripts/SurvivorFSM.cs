@@ -16,7 +16,7 @@ public class SurvivorFSM : MonoBehaviour
     
     private SurvivorState m_State;
     
-    private float findDistance = 5f;
+    private float findDistance = 10f;
     
     private GameObject _player;
     
