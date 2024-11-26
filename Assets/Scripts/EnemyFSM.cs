@@ -90,8 +90,6 @@ public class EnemyFSM : MonoBehaviour
             {
                 target = moveColliders[i].gameObject;
             }
-
-            return;
         }
         if (Vector3.Distance(transform.position, target.transform.position) <= attackDistance)
         {

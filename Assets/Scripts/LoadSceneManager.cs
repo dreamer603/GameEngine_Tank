@@ -12,11 +12,12 @@ public class LoadSceneManager : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        if (Instance == null)
+        if (Instance != null)
         {
-            Instance = this;
+            Destroy(Instance.gameObject);
         }
 
+        Instance = this;
         DontDestroyOnLoad(gameObject);
         _isGameEnd = false;
     }
