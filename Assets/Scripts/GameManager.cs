@@ -50,6 +50,11 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Score == survivorSpawnPoints.Length * 100)
+        {
+            LoadSceneManager.Instance.GameClear();
+        }
+        
         _currentTime += Time.deltaTime;
         if (_currentTime >= _spawnCoolTime && _currentZombies < _maxZombies)
         {
@@ -59,11 +64,6 @@ public class GameManager : MonoBehaviour
             _currentTime = 0f;
             _currentZombies += 1;
         }
-    }
-
-    public void GameOver()
-    {
-        SceneManager.LoadScene("GameOverScene");
     }
 
     public int Score

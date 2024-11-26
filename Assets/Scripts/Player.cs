@@ -123,7 +123,7 @@ public class Player : MonoBehaviour
         dieEffect.transform.position = transform.position;
         Instantiate(dieEffect);
         Destroy(gameObject);
-        GameManager.Instance.GameOver();
+        LoadSceneManager.Instance.GameOver();
     }
 
     private IEnumerator ChargePowerGauge()

@@ -42,7 +42,7 @@ public class Bullet : MonoBehaviour
             if (cols[i].gameObject.CompareTag("Survivor"))
             {
                 Destroy(cols[i].gameObject);
-                GameManager.Instance.GameOver();
+                LoadSceneManager.Instance.GameOver();
             }
         }
         Destroy(gameObject);
